@@ -1,0 +1,25 @@
+server:
+  port: 9140
+hostname: localhost:9140
+spring:
+  application:
+    name: chat-service
+  cloud:
+    config:
+      import-check:
+        enabled: false
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    username:
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+      show_sql: true
+      format_sql: true
+      use_sql_comments: false
+      type: all
+      disableConnectionTracking: true
