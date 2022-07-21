@@ -1,6 +1,7 @@
 package fr.esgi.group.service;
 
 
+import fr.esgi.group.bus.CreatedGroupProducer;
 import fr.esgi.group.exception.ResourceNotFoundException;
 import fr.esgi.group.mapper.UserMapper;
 import fr.esgi.group.model.Group;
@@ -21,9 +22,11 @@ public class GroupService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final GroupRepository groupRepository;
     private final UserMapper userMapper;
+    private final CreatedGroupProducer createdGroupProducer;
 
     public Group createGroup(Group groupModel) {
         var group= groupRepository.save(groupModel);
+        createdGroupProducer.groupCreated(group);
         group.getMembers().forEach(member->{
             simpMessagingTemplate.convertAndSend("/notifications/" + member.getId(),
                     new SocketModel(SocketType.GROUP_CREATED, group.getName()));
