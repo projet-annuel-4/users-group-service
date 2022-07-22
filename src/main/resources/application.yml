@@ -15,7 +15,7 @@ spring:
   cloud:
     stream:
       function:
-        definition: createdUserConsumer,createdGroupProducer
+        definition: createdUserConsumer;createdGroupProducer
       kafka:
         binder:
           brokers: ${KAFKA_URL}
