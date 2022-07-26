@@ -14,6 +14,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/groups")
@@ -35,7 +37,11 @@ public class GroupController {
         groupService.deleteGroupById(id);
         return ResponseEntity.noContent().build();
     }
-
+    @GetMapping("/{email}")
+    public ResponseEntity<List<GroupResponse>> getGroupByUserEmail(@PathVariable String email) {
+        var groups = groupService.getGroupByUserEmail(email);
+        return ResponseEntity.ok(groups.stream().map(groupMapper::convertToResponse).collect(Collectors.toList()));
+    }
     @PatchMapping("/{id}/add-members")
     public ResponseEntity<GroupResponse> addMembers(@PathVariable Long id, @RequestBody @Valid @NotNull GroupRequest groupRequest) {
         var group = groupService.addMembers(id, groupMapper.convertToModel(groupRequest));

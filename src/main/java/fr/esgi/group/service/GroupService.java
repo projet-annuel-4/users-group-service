@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +26,7 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final UserMapper userMapper;
     private final CreatedGroupProducer createdGroupProducer;
+    private final UserService userService;
 
     public Group createGroup(Group groupModel) {
         var group= groupRepository.save(groupModel);
@@ -42,6 +46,11 @@ public class GroupService {
                     new SocketModel(SocketType.GROUP_DELETED, group.getName()));
         });
 
+    }
+    public List<Group> getGroupByUserEmail(String email) {
+        var user = userService.getUserByEmail(email);
+        var groups = groupRepository.findAll().stream().filter(group -> group.getMembers().contains(user)).collect(Collectors.toList());
+        return groups;
     }
     public Group addMembers(Long id,Group groupModel) {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Member","id",id.toString()));
