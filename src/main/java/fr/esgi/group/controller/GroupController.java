@@ -37,11 +37,25 @@ public class GroupController {
         groupService.deleteGroupById(id);
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("/{email}")
-    public ResponseEntity<List<GroupResponse>> getGroupByUserEmail(@PathVariable String email) {
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GroupResponse> getGroupById(@PathVariable Long id) {
+        var group = groupService.getGroupById(id);
+        return ResponseEntity.ok(groupMapper.convertToResponse(group));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GroupResponse>> getGroups() {
+        var groups = groupService.getGroupAll();
+        return ResponseEntity.ok(groups.stream().map(groupMapper::convertToResponse).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/member/{email}")
+    public ResponseEntity<List<GroupResponse>> getGroupsByMemberEmail(@PathVariable String email) {
         var groups = groupService.getGroupByUserEmail(email);
         return ResponseEntity.ok(groups.stream().map(groupMapper::convertToResponse).collect(Collectors.toList()));
     }
+
     @PatchMapping("/{id}/add-members")
     public ResponseEntity<GroupResponse> addMembers(@PathVariable Long id, @RequestBody @Valid @NotNull GroupRequest groupRequest) {
         var group = groupService.addMembers(id, groupMapper.convertToModel(groupRequest));

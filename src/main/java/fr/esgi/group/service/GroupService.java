@@ -39,7 +39,7 @@ public class GroupService {
     }
 
     public void deleteGroupById(Long id) {
-        var group= groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Member","id",id.toString()));
+        var group= groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         groupRepository.deleteById(id);
         group.getMembers().forEach(member->{
             simpMessagingTemplate.convertAndSend(NOTIFICATIONS_URL + member.getId(),
@@ -53,7 +53,7 @@ public class GroupService {
         return groups;
     }
     public Group addMembers(Long id,Group groupModel) {
-        var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Member","id",id.toString()));
+        var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         group.getMembers().addAll(groupModel.getMembers());
         groupRepository.saveAndFlush(group);
         group.getMembers().forEach(member->{
@@ -64,7 +64,7 @@ public class GroupService {
     }
 
     public Group deleteMembers(Long id, Group groupModel) {
-        var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Member","id",id.toString()));
+        var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         group.getMembers().removeAll(groupModel.getMembers());
         groupRepository.saveAndFlush(group);
         group.getMembers().forEach(member->{
@@ -75,7 +75,7 @@ public class GroupService {
     }
 
     public Group updateGroupName(Long id, String name) {
-        var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Member","id",id.toString()));
+        var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         group.setName(name);
          groupRepository.saveAndFlush(group);
         group.getMembers().forEach(member->{
@@ -85,4 +85,10 @@ public class GroupService {
         return group;
     }
 
+    public List<Group> getGroupAll() {
+        return groupRepository.findAll();
+    }
+    public Group getGroupById(Long id) {
+        return groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
+    }
 }
