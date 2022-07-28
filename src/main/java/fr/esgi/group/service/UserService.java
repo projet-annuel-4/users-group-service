@@ -26,11 +26,8 @@ public class UserService {
         return user.orElseThrow(()->new ResourceNotFoundException("User", "id", String.valueOf(id)));
     }
 
-    public UserResponse getUserByEmail(String email) {
+    public User getUserByEmail(String email) {
         var user = userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new ResourceNotFoundException("User", "email", email);
-        }
-        return userMapper.convertToResponseDto(user.get());
+        return user.orElseThrow(()->new ResourceNotFoundException("User", "email", email));
     }
 }

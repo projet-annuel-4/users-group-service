@@ -51,10 +51,9 @@ public class GroupService {
         });
 
     }
-    public List<Group> getGroupByUserEmail(String email) {
+    public Set<Group> getGroupByUserEmail(String email) {
         var user = userService.getUserByEmail(email);
-        var groups = groupRepository.findAll().stream().filter(group -> group.getMembers().contains(user)).collect(Collectors.toList());
-        return groups;
+        return user.getGroups();
     }
     public Group addMembers(Long id,Group groupModel) {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
