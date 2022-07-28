@@ -2,6 +2,7 @@ package fr.esgi.group.service;
 
 
 import fr.esgi.group.bus.CreatedGroupProducer;
+import fr.esgi.group.dto.group.CreateGroupRequest;
 import fr.esgi.group.exception.ResourceNotFoundException;
 import fr.esgi.group.mapper.UserMapper;
 import fr.esgi.group.model.Group;
@@ -28,7 +29,10 @@ public class GroupService {
     private final CreatedGroupProducer createdGroupProducer;
     private final UserService userService;
 
-    public Group createGroup(Group groupModel) {
+    public Group createGroup(CreateGroupRequest groupRequest) {
+        var groupModel= new Group();
+        groupModel.setName(groupRequest.getName());
+        groupModel.setMembers(groupRequest.getMembers().stream().map(userService::getUserById).collect(Collectors.toSet()));
         var group= groupRepository.save(groupModel);
         createdGroupProducer.groupCreated(group);
         group.getMembers().forEach(member->{

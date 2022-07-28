@@ -21,12 +21,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public UserResponse getUserById(Long id) {
+    public User getUserById(Long id) {
         var user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new ResourceNotFoundException("User", "id", String.valueOf(id));
-        }
-        return userMapper.convertToResponseDto(user.get());
+        return user.orElseThrow(()->new ResourceNotFoundException("User", "id", String.valueOf(id)));
     }
 
     public UserResponse getUserByEmail(String email) {

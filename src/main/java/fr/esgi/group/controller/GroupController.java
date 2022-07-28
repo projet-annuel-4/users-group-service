@@ -26,7 +26,7 @@ public class GroupController {
 
     @PostMapping
     public ResponseEntity createGroup(@RequestBody @Valid @NotNull CreateGroupRequest groupRequest) {
-        var group = groupService.createGroup(groupMapper.convertToModel(groupRequest));
+        var group = groupService.createGroup(groupRequest);
         URI location = URI.create(
                 ServletUriComponentsBuilder.fromCurrentRequest().build().toUri() + "/" + group.getId());
         return ResponseEntity.created(location).body(group);
