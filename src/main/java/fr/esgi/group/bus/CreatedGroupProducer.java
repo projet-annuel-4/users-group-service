@@ -25,8 +25,8 @@ public class CreatedGroupProducer {
                 .members(group.getMembers().stream().map(userMapper::convertToResponseDto).collect(Collectors.toSet()))
                 .build();
 
-      /*  streamBridge.send(GROUP_CREATED_OUTPUT, groupEvent);
+        streamBridge.send(GROUP_CREATED_OUTPUT, groupEvent);
 
-        log.info("New group with id '{}' and name '{}' sent to bus.", groupEvent.getId(), groupEvent.getName());*/
+        log.info("New group with id '{}' and name '{}' sent to bus.", groupEvent.getId(), groupEvent.getName());
     }
 }
