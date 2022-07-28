@@ -12,6 +12,7 @@ import fr.esgi.group.socket.SocketType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -51,10 +52,13 @@ public class GroupService {
         });
 
     }
+    @Transactional
     public Set<Group> getGroupByUserEmail(String email) {
         var user = userService.getUserByEmail(email);
-        return user.getGroups();
+        var groups= groupRepository.findAll().stream().filter(group -> group.getMembers().contains(user)).collect(Collectors.toSet());
+        return groups;
     }
+    @Transactional
     public Group addMembers(Long id,Group groupModel) {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         group.getMembers().addAll(groupModel.getMembers());
@@ -87,7 +91,7 @@ public class GroupService {
         });
         return group;
     }
-
+    @Transactional
     public List<Group> getGroupAll() {
         return groupRepository.findAll();
     }
