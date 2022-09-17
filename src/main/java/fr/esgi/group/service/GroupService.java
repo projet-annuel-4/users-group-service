@@ -33,7 +33,7 @@ public class GroupService {
     public Group createGroup(CreateGroupRequest groupRequest) {
         var groupModel= new Group();
         groupModel.setName(groupRequest.getName());
-        groupModel.setMembers(groupRequest.getMembers().stream().map(userService::getUserById).collect(Collectors.toSet()));
+        groupModel.setMembers(groupRequest.getMembers().stream().map(memberId->userService.getUserById(Long.parseLong(memberId))).collect(Collectors.toSet()));
         var group= groupRepository.save(groupModel);
         createdGroupProducer.groupCreated(group);
         group.getMembers().forEach(member->{
