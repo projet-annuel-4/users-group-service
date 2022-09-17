@@ -17,5 +17,5 @@ public class CreateGroupRequest {
     @NotNull
      private String name;
     @NotEmpty(message = "Input members list cannot be empty.")
-     private Set<Long> members;
+     private Set<String> members;
 }
