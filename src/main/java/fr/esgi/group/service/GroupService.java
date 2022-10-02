@@ -3,6 +3,7 @@ package fr.esgi.group.service;
 
 import fr.esgi.group.bus.CreatedGroupProducer;
 import fr.esgi.group.dto.group.CreateGroupRequest;
+import fr.esgi.group.exception.BadRequestException;
 import fr.esgi.group.exception.ResourceNotFoundException;
 import fr.esgi.group.mapper.UserMapper;
 import fr.esgi.group.model.Group;
@@ -32,6 +33,9 @@ public class GroupService {
 
     public Group createGroup(CreateGroupRequest groupRequest) {
         var groupModel= new Group();
+        if(groupRepository.findByName(groupRequest.getName()).isEmpty()){
+            throw new BadRequestException("Exist name of group.");
+        }
         groupModel.setName(groupRequest.getName());
         groupModel.setMembers(groupRequest.getMembers().stream().map(memberId->userService.getUserById(Long.parseLong(memberId))).collect(Collectors.toSet()));
         var group= groupRepository.save(groupModel);
