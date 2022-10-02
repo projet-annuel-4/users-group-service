@@ -33,7 +33,7 @@ public class GroupService {
 
     public Group createGroup(CreateGroupRequest groupRequest) {
         var groupModel= new Group();
-        if(groupRepository.findByName(groupRequest.getName()).isEmpty()){
+        if(groupRepository.findByName(groupRequest.getName()).isPresent()){
             throw new BadRequestException("Exist name of group.");
         }
         groupModel.setName(groupRequest.getName());
