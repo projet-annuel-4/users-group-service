@@ -22,7 +22,7 @@ public class CreatedGroupProducer {
         var groupEvent = GroupEvent.builder()
                 .id(group.getId())
                 .name(group.getName())
-                .members(group.getMembers().stream().map(userMapper::convertToResponseDto).collect(Collectors.toSet()))
+                .members(group.getMembers().stream().map(userMapper::convertToResponse).collect(Collectors.toSet()))
                 .build();
 
         streamBridge.send(GROUP_CREATED_OUTPUT, groupEvent);

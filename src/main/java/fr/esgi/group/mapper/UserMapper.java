@@ -15,7 +15,7 @@ public class UserMapper {
 
     private final ModelMapper modelMapper;
 
-    public UserResponse convertToResponseDto(User user) {
+    public UserResponse convertToResponse(User user) {
         return modelMapper.map(user, UserResponse.class);
     }
 

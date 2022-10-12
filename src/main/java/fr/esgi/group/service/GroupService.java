@@ -7,6 +7,7 @@ import fr.esgi.group.exception.BadRequestException;
 import fr.esgi.group.exception.ResourceNotFoundException;
 import fr.esgi.group.mapper.UserMapper;
 import fr.esgi.group.model.Group;
+import fr.esgi.group.model.User;
 import fr.esgi.group.repository.GroupRepository;
 import fr.esgi.group.socket.SocketModel;
 import fr.esgi.group.socket.SocketType;
@@ -69,7 +70,7 @@ public class GroupService {
         groupRepository.saveAndFlush(group);
         group.getMembers().forEach(member->{
             simpMessagingTemplate.convertAndSend(NOTIFICATIONS_URL + member.getId(),
-                    new SocketModel(SocketType.GROUP_MEMBERS_ADDED, groupModel.getMembers().stream().map(userMapper::convertToResponseDto).collect(Collectors.toSet())));
+                    new SocketModel(SocketType.GROUP_MEMBERS_ADDED, groupModel.getMembers().stream().map(userMapper::convertToResponse).collect(Collectors.toSet())));
         });
         return group;
     }
@@ -80,7 +81,7 @@ public class GroupService {
         groupRepository.saveAndFlush(group);
         group.getMembers().forEach(member->{
             simpMessagingTemplate.convertAndSend(NOTIFICATIONS_URL + member.getId(),
-                    new SocketModel(SocketType.GROUP_MEMBERS_DELETED, groupModel.getMembers().stream().map(userMapper::convertToResponseDto).collect(Collectors.toSet())));
+                    new SocketModel(SocketType.GROUP_MEMBERS_DELETED, groupModel.getMembers().stream().map(userMapper::convertToResponse).collect(Collectors.toSet())));
         });
         return group;
     }
@@ -101,5 +102,10 @@ public class GroupService {
     }
     public Group getGroupById(Long id) {
         return groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
+    }
+
+    public Set<User> getGroupMembers(Long id) {
+        var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
+        return group.getMembers();
     }
 }
