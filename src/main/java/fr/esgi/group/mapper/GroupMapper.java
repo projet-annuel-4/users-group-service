@@ -26,6 +26,7 @@ public class GroupMapper {
     public Group convertToModel(CreateGroupRequest groupRequest) {
         return Group.builder()
                 .name(groupRequest.getName())
+                .creatorId(groupRequest.getCreatorId())
                 .members(groupRequest.getMembers().stream().map(memberId-> User.builder().id(Long.parseLong(memberId)).build()).collect(Collectors.toSet()))
                 .build();
     }
@@ -34,6 +35,7 @@ public class GroupMapper {
         return Group.builder()
                 .id(groupRequest.getId())
                 .name(groupRequest.getName())
+                .creatorId(groupRequest.getCreatorId())
                 .members(groupRequest.getMembers().stream().map(memberId-> User.builder().id(Long.parseLong(memberId)).build()).collect(Collectors.toSet()))
                 .build();
     }

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
@@ -15,6 +14,7 @@ import java.util.Set;
 @Builder
 public class GroupEvent {
      private Long id;
+     private Long creatorId;
      private String name;
      private Set<UserResponse> members;
 }

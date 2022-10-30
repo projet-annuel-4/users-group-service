@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,14 +30,15 @@ public class GroupService {
     private final UserMapper userMapper;
     private final CreatedGroupProducer createdGroupProducer;
     private final UserService userService;
-
+    @Transactional
     public Group createGroup(CreateGroupRequest groupRequest) {
         var groupModel= new Group();
         if(groupRepository.findByName(groupRequest.getName()).isPresent()){
             throw new BadRequestException("Exist name of group.");
         }
         groupModel.setName(groupRequest.getName());
-        groupModel.setMembers(groupRequest.getMembers().stream().map(memberId->userService.getUserById(Long.parseLong(memberId))).collect(Collectors.toSet()));
+        groupModel.setCreatorId(groupRequest.getCreatorId());
+        groupModel.setMembers(groupRequest.getMembers().stream().map(memberId -> userService.getUserById(Long.parseLong(memberId))).collect(Collectors.toSet()));
         var group= groupRepository.save(groupModel);
         createdGroupProducer.groupCreated(group);
         group.getMembers().forEach(member->{
@@ -48,6 +48,7 @@ public class GroupService {
        return group;
     }
 
+    @Transactional
     public void deleteGroupById(Long id) {
         var group= groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         groupRepository.deleteById(id);
@@ -75,6 +76,7 @@ public class GroupService {
         return group;
     }
 
+    @Transactional
     public Group deleteMembers(Long id, Group groupModel) {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         group.getMembers().removeAll(groupModel.getMembers());
@@ -86,6 +88,7 @@ public class GroupService {
         return group;
     }
 
+    @Transactional
     public Group updateGroupName(Long id, String name) {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         group.setName(name);

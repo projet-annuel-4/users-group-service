@@ -22,6 +22,7 @@ public class CreatedGroupProducer {
         var groupEvent = GroupEvent.builder()
                 .id(group.getId())
                 .name(group.getName())
+                .creatorId(group.getCreatorId())
                 .members(group.getMembers().stream().map(userMapper::convertToResponse).collect(Collectors.toSet()))
                 .build();
 

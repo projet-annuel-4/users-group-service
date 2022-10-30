@@ -15,7 +15,9 @@ import java.util.Set;
 @Builder
 public class CreateGroupRequest {
     @NotNull
-     private String name;
+    private String name;
+    @NotNull
+    private Long creatorId;
     @NotEmpty(message = "Input members list cannot be empty.")
-     private Set<String> members;
+    private Set<String> members;
 }

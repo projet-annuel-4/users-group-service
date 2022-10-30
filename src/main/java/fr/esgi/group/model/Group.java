@@ -3,7 +3,6 @@ package fr.esgi.group.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -22,6 +21,7 @@ public class Group {
     @SequenceGenerator(name = "groups_id_seq", sequenceName = "groups_id_seq", initialValue = 1, allocationSize = 1)
     private Long id;
     private String name;
+    private Long creatorId;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "users_group",
@@ -48,6 +48,14 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getCreatorId() {
+        return this.creatorId;
+    }
+
+    public void setCreatorId(Long creatorId) {
+        this.creatorId = creatorId;
     }
 
     public Set<User> getMembers() {

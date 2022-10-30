@@ -15,8 +15,9 @@ import java.util.Set;
 @Builder
 public class GroupResponse {
     @NotNull
-     private Long id;
+    private Long id;
+    private Long creatorId;
     @NotNull
-     private String name;
+    private String name;
      private Set<UserResponse> members;
 }
