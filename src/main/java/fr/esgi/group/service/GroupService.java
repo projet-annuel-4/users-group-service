@@ -69,7 +69,8 @@ public class GroupService {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         group.getMembers().addAll(groupModel.getMembers().stream().map(user -> userService.getUserById(user.getId())).collect(Collectors.toList()));
         groupRepository.saveAndFlush(group);
-        group.getMembers().forEach(member->{
+        createdGroupProducer.groupCreated(group);
+        group.getMembers().forEach(member -> {
             simpMessagingTemplate.convertAndSend(NOTIFICATIONS_URL + member.getId(),
                     new SocketModel(SocketType.GROUP_MEMBERS_ADDED, groupModel.getMembers().stream().map(userMapper::convertToResponse).collect(Collectors.toSet())));
         });
@@ -81,7 +82,8 @@ public class GroupService {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         group.getMembers().removeAll(groupModel.getMembers().stream().map(user -> userService.getUserById(user.getId())).collect(Collectors.toList()));
         groupRepository.saveAndFlush(group);
-        group.getMembers().forEach(member->{
+        createdGroupProducer.groupCreated(group);
+        group.getMembers().forEach(member -> {
             simpMessagingTemplate.convertAndSend(NOTIFICATIONS_URL + member.getId(),
                     new SocketModel(SocketType.GROUP_MEMBERS_DELETED, groupModel.getMembers().stream().map(userMapper::convertToResponse).collect(Collectors.toSet())));
         });
@@ -92,8 +94,9 @@ public class GroupService {
     public Group updateGroupName(Long id, String name) {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
         group.setName(name);
-         groupRepository.saveAndFlush(group);
-        group.getMembers().forEach(member->{
+        groupRepository.saveAndFlush(group);
+        createdGroupProducer.groupCreated(group);
+        group.getMembers().forEach(member -> {
             simpMessagingTemplate.convertAndSend(NOTIFICATIONS_URL + member.getId(),
                     new SocketModel(SocketType.GROUP_NAME_UPDATED, group.getName()));
         });
