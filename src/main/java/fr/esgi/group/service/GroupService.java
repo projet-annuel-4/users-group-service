@@ -67,7 +67,7 @@ public class GroupService {
     @Transactional
     public Group addMembers(Long id,Group groupModel) {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
-        group.getMembers().addAll(groupModel.getMembers());
+        group.getMembers().addAll(groupModel.getMembers().stream().map(user -> userService.getUserById(user.getId())).collect(Collectors.toList()));
         groupRepository.saveAndFlush(group);
         group.getMembers().forEach(member->{
             simpMessagingTemplate.convertAndSend(NOTIFICATIONS_URL + member.getId(),
@@ -79,7 +79,7 @@ public class GroupService {
     @Transactional
     public Group deleteMembers(Long id, Group groupModel) {
         var group = groupRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Group","id",id.toString()));
-        group.getMembers().removeAll(groupModel.getMembers());
+        group.getMembers().removeAll(groupModel.getMembers().stream().map(user -> userService.getUserById(user.getId())).collect(Collectors.toList()));
         groupRepository.saveAndFlush(group);
         group.getMembers().forEach(member->{
             simpMessagingTemplate.convertAndSend(NOTIFICATIONS_URL + member.getId(),
